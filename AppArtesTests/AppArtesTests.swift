@@ -46,29 +46,23 @@ struct ExposicaoTests {
     
     @Test("Remover uma obra por ID limpa a lista corretamente")
     func removerObra() async throws {
-        // Given
         let idObra = UUID()
         let obra = Obra(id: idObra, nome: "Pintura Virtual", descricao: "VR", preco: 500.0, dataCriacao: Date(), tema: "Abstrato")
         sut.adicionarObra(obra)
         
-        // When
         sut.removerObra(idObra: idObra)
         
-        // Then
         #expect(sut.listaDeObras.isEmpty)
     }
     
     @Test("Cálculo do valor total deve somar os preços das obras")
     func calcularValorTotal() async throws {
-        // Given
         let obra1 = Obra(id: UUID(), nome: "Obra 1", descricao: "D1", preco: 100.0, dataCriacao: Date(), tema: "T1")
         let obra2 = Obra(id: UUID(), nome: "Obra 2", descricao: "D2", preco: 250.50, dataCriacao: Date(), tema: "T2")
         
-        // When
         sut.adicionarObra(obra1)
         sut.adicionarObra(obra2)
         
-        // Then
         let valorEsperado = 350.50
         #expect(sut.calcularValorTotal() == valorEsperado)
     }
