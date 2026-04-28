@@ -7,10 +7,12 @@
 
 import SwiftUI
 
-struct NewItem: View {
+struct NewCollectionView: View {
     @Environment(\.dismiss) var dismiss
-    var formItems = ["Título", "Descrição", "Artista", "Data de criação"]
+    var formItems = ["Título", "Descrição"]
     @State private var formData: [String: String] = [:]
+    
+    @State var taApertado = false
     var body: some View {
         NavigationStack{
             VStack{
@@ -18,9 +20,9 @@ struct NewItem: View {
                     //open gallery// 3D scanner
                 }
                 label:{
-                    Image(systemName: "photo")
+                    Image("newCollection")
                         .resizable()
-                        .frame(width: 200, height: 150)
+                        .frame(width: 217, height: 129)
                         .foregroundStyle(.gray)
                 }
                 Form {
@@ -30,11 +32,12 @@ struct NewItem: View {
                             set: { formData[item] = $0 }
                         ))
                     }
+                    Toggle("Tornar coleção público", isOn: $isEnabled)
                 }
                 .scrollContentBackground(.hidden) 
                 
             }
-            .navigationTitle("Novo item")
+            .navigationTitle("Nova coleção")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -60,5 +63,5 @@ struct NewItem: View {
 
 
 #Preview {
-    NewItem()
+    NewCollectionView()
 }

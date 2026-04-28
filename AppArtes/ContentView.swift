@@ -22,6 +22,8 @@ struct ContentView: View {
                 Text("")
                     .tabItem {
                     }
+                
+                GaleriaView()
                     .tag(2)
                 
                 Text("Galeria View")
