@@ -3,7 +3,6 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedTab = 0
     @State private var isShowingSheet = false
-    
     var body: some View {
         // O ZStack permite colocar o botão flutuante exatamente no centro da TabBar
         ZStack(alignment: .bottom) {
@@ -25,11 +24,8 @@ struct ContentView: View {
                 
                 GaleriaView()
                     .tag(2)
-                
-                Text("Galeria View")
                     .tabItem {
                         Image(systemName: "photo.artframe")
-                        
                     }
                     .tag(3)
                 

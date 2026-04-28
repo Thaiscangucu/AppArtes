@@ -10,21 +10,17 @@ import SwiftUI
 struct NewCollectionView: View {
     @Environment(\.dismiss) var dismiss
     var formItems = ["Título", "Descrição"]
-    @State private var formData: [String: String] = [:]
+    @State var formData: [String: String] = [:]
+    @State var toggle = false
+    @Binding var collections: [String]
     
-    @State var taApertado = false
     var body: some View {
         NavigationStack{
             VStack{
-                Button{
-                    //open gallery// 3D scanner
-                }
-                label:{
-                    Image("newCollection")
-                        .resizable()
-                        .frame(width: 217, height: 129)
-                        .foregroundStyle(.gray)
-                }
+                Image("newCollection")
+                    .resizable()
+                    .frame(width: 217, height: 129)
+                    .foregroundStyle(.gray)
                 Form {
                     ForEach(formItems, id: \.self) { item in
                         TextField(item, text: Binding(
@@ -32,7 +28,7 @@ struct NewCollectionView: View {
                             set: { formData[item] = $0 }
                         ))
                     }
-                    Toggle("Tornar coleção público", isOn: $isEnabled)
+                    Toggle("Tornar coleção pública", isOn: $toggle)
                 }
                 .scrollContentBackground(.hidden) 
                 
@@ -49,7 +45,13 @@ struct NewCollectionView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        //Create new item
+                            let titulo = formData["Título", default: ""]
+                            let descricao = formData["Descrição", default: ""]
+                            
+                            if !titulo.isEmpty {
+                                collections.append(titulo)
+                            }
+                        dismiss()
                     }) {
                         Image(systemName: "checkmark")
                     }
@@ -63,5 +65,5 @@ struct NewCollectionView: View {
 
 
 #Preview {
-    NewCollectionView()
+    NewCollectionView(collections: .constant(["collection"]))
 }

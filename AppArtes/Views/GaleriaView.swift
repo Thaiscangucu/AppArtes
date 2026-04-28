@@ -9,11 +9,21 @@ import SwiftUI
 
 struct GaleriaView: View {
     @State private var isShowingSheet = false
-    
+    @State var collections: [String] = []
+    let columns = [
+        GridItem(.flexible(), spacing: 0),
+        GridItem(.flexible(), spacing: 0)
+    ]
     var body: some View {
         NavigationStack{
-            VStack{
-                
+            ScrollView {
+                // fix grid
+                LazyVGrid(columns: columns, spacing: 1) {
+                    ForEach(collections, id: \.self) { item in
+                        Rectangle()
+                            .frame(width: 200, height: 200)
+                    }
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -28,7 +38,7 @@ struct GaleriaView: View {
             .navigationTitle("Coleções")
             
             .sheet(isPresented: $isShowingSheet) {
-                NewCollectionView()
+                NewCollectionView(collections: $collections)
             }
         }
     }
