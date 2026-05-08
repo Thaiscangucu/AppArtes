@@ -13,6 +13,7 @@ struct NewCollectionView: View {
     @State var formData: [String: String] = [:]
     @State var toggle = false
     @Binding var collections: [String]
+
     
     var body: some View {
         NavigationStack{
@@ -21,6 +22,8 @@ struct NewCollectionView: View {
                     .resizable()
                     .frame(width: 217, height: 129)
                     .foregroundStyle(.gray)
+                
+                
                 Form {
                     ForEach(formItems, id: \.self) { item in
                         TextField(item, text: Binding(

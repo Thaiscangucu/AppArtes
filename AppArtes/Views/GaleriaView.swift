@@ -9,19 +9,42 @@ import SwiftUI
 
 struct GaleriaView: View {
     @State private var isShowingSheet = false
-    @State var collections: [String] = []
-    let columns = [
-        GridItem(.flexible(), spacing: 0),
-        GridItem(.flexible(), spacing: 0)
-    ]
+    @State var collections: [String] = ["title"]
     var body: some View {
         NavigationStack{
             ScrollView {
-                // fix grid
-                LazyVGrid(columns: columns, spacing: 1) {
-                    ForEach(collections, id: \.self) { item in
-                        Rectangle()
-                            .frame(width: 200, height: 200)
+                ForEach(collections, id: \.self) { item in
+                    NavigationLink{
+                        CollectionView()
+                    }
+                    label:{
+                        VStack(alignment: .leading){
+                            Text(item)
+                                .bold()
+                                .foregroundColor(.black)
+                            HStack{
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: 156, height: 142)
+                                    .background(.white)
+                                VStack{
+                                    Rectangle()
+                                        .foregroundColor(.clear)
+                                        .frame(width: 144, height: 68)
+                                        .background(.white)
+                                    Rectangle()
+                                        .foregroundColor(.clear)
+                                        .frame(width: 144, height: 68)
+                                        .background(.white)
+                                }
+                            }
+                        }
+                        .background{
+                            Rectangle()
+                                .foregroundColor(Color(red: 0.85, green: 0.85, blue: 0.85))
+                                .frame(width: 350, height: 190)
+                        }
+                        .frame(width: 350, height: 190)
                     }
                 }
             }
@@ -47,3 +70,4 @@ struct GaleriaView: View {
 #Preview {
     GaleriaView()
 }
+
