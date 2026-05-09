@@ -14,6 +14,6 @@ struct AppArtesApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: ObraDeArte.self)
+        .modelContainer(for: [Colecao.self, ObraDeArte.self])
     }
 }

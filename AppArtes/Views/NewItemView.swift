@@ -2,26 +2,35 @@
 //  Sheet.swift
 //  AppArtes
 //
-//  Created by Thais Cangucu on 24/04/26.
+//  Created by Thais Cangucu.
 //
 
 import SwiftUI
+import SwiftData
 import UIKit
 
 struct NewItem: View {
+    // 1. Recebe a coleção para a qual a obra está sendo adicionada
+    var colecao: Colecao
+    
+    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) var dismiss
-    var formItems = ["Título", "Descrição", "Artista", "Data de criação"]
+    
     @State private var formData: [String: String] = [:]
     
     @State private var selectedImage: UIImage?
     @State private var showDialog = false
     @State private var showImagePicker = false
     @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
-
+    
+    @State var title = ""
+    @State var descricao = ""
+    @State var data = Date.now
     
     var body: some View {
         NavigationStack{
             VStack{
+                // Exibição da Imagem ou Botão de Adicionar
                 if let image = selectedImage {
                     Image(uiImage: image)
                         .resizable()
@@ -31,8 +40,8 @@ struct NewItem: View {
                         .onTapGesture {
                             showDialog = true
                         }
-                } else {
-            
+                }
+                else {
                     Button(action: {
                         showDialog = true
                     }) {
@@ -46,16 +55,19 @@ struct NewItem: View {
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
                 }
-                Form {
-                    ForEach(formItems, id: \.self) { item in
-                        TextField(item, text: Binding(
-                            get: { formData[item, default: ""] },
-                            set: { formData[item] = $0 }
-                        ))
-                    }
-                }
-                .scrollContentBackground(.hidden) 
                 
+                // Formulário de dados
+                Form {
+                    TextField("Título", text: $title)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.words)
+                    TextField("Descrição", text: $descricao)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.words)
+                    DatePicker("Data de criação", selection: $data, displayedComponents: .date)
+                        .datePickerStyle(.compact)
+                }
+                .scrollContentBackground(.hidden)
             }
             .navigationTitle("Novo item")
             .navigationBarTitleDisplayMode(.inline)
@@ -69,12 +81,30 @@ struct NewItem: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        
+                        // 2. Transforma a imagem em Data
+                        if let image = selectedImage, let imageData = image.jpegData(compressionQuality: 0.8) {
+                            
+                            // 3. Cria a obra
+                            let novaObra = ObraDeArte(
+                                titulo: title,
+                                descricao: descricao,
+                                image: imageData,
+                                dataCriacao: data
+                            )
+                            
+                            // 4. Salva a obra e CONECTA na coleção
+                            context.insert(novaObra)
+                            colecao.obras.append(novaObra)
+                            
+                            dismiss()
+                        }
                     }) {
                         Image(systemName: "checkmark")
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.blue)
+                    // Só permite salvar se tiver imagem e título
+                    .disabled(title.isEmpty || selectedImage == nil)
                 }
             }
             .confirmationDialog("Escolha uma opção", isPresented: $showDialog, titleVisibility: .visible) {
@@ -97,17 +127,12 @@ struct NewItem: View {
 }
 
 
-
-#Preview {
-    NewItem()
-}
-
-
+// MARK: - Componente Nativo de Câmera/Galeria
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
     @Environment(\.presentationMode) private var presentationMode
     var sourceType: UIImagePickerController.SourceType = .photoLibrary
-
+    
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()
         imagePicker.allowsEditing = false
@@ -115,20 +140,20 @@ struct ImagePicker: UIViewControllerRepresentable {
         imagePicker.delegate = context.coordinator
         return imagePicker
     }
-
+    
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
-
+    
     final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
         var parent: ImagePicker
-
+        
         init(_ parent: ImagePicker) {
             self.parent = parent
         }
-
+        
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             if let image = info[.originalImage] as? UIImage {
                 parent.selectedImage = image

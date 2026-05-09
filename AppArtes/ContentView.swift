@@ -3,8 +3,9 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedTab = 0
     @State private var isShowingSheet = false
+    
     var body: some View {
-        // O ZStack permite colocar o botão flutuante exatamente no centro da TabBar
+        
         ZStack(alignment: .bottom) {
             TabView(selection: $selectedTab) {
                 HomeView()
@@ -12,50 +13,28 @@ struct ContentView: View {
                         Image(systemName: "house")
                     }
                     .tag(0)
-                
-                Text("Loja View")
+                Text("Marketplace em breve")
                     .tabItem {
                         Image(systemName: "bag.fill")
                     }
                     .tag(1)
-                Text("")
-                    .tabItem {
-                    }
-                
-                GaleriaView()
-                    .tag(2)
+                CollectionsView()
                     .tabItem {
                         Image(systemName: "photo.artframe")
                     }
-                    .tag(3)
+                    .tag(3) // Tag corrigida (antes tinha uma tag(2) duplicada aqui)
                 
-                Text("Perfil View")
+                Text("Tela de perfil em breve")
                     .tabItem {
                         Image(systemName: "person")
                     }
                     .tag(4)
             }
-            
-            Button {
-                isShowingSheet.toggle()
-            } label: {
-                // aumentar o tamanho da area de clique deste botao
-                Image(systemName: "plus")
-                    .resizable()
-                    .frame(width: 20, height: 20)
-                    .foregroundColor(.black)
-                    .background(Circle().fill(Color.clear))
-            }
-            .offset(y: -10)
-
-        }
-
-        .sheet(isPresented: $isShowingSheet) {
-            NewItem()
         }
     }
 }
 
-#Preview{
+// Preview simulando o contêiner (não esqueça que o HomeView precisa existir no projeto)
+#Preview {
     ContentView()
 }

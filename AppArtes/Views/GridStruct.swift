@@ -1,47 +1,37 @@
-//
-//  HomeView.swift
-//  AppArtes
-//
-//  Created by Thais Cangucu on 24/04/26.
-//
-
 import SwiftUI
 
-struct MasonryGrid<Content: View, T: Identifiable>: View {
-    let items: [T]
+// Alterei o nome genérico de "Data" para "DataCollection" para evitar conflito com o Foundation.Data
+struct WaterfallGrid<DataCollection, Content>: View where DataCollection: RandomAccessCollection, DataCollection.Element: Identifiable, Content: View {
+    
+    let data: DataCollection
     let columns: Int
     let spacing: CGFloat
-    let content: (T) -> Content
     
-    init(items: [T], columns: Int = 2, spacing: CGFloat = 8, @ViewBuilder content: @escaping (T) -> Content) {
-        self.items = items
-        self.columns = columns
-        self.spacing = spacing
-        self.content = content
-    }
+    // Adicionado @ViewBuilder para permitir o uso de "if let" na hora de criar as imagens
+    @ViewBuilder let content: (DataCollection.Element) -> Content
     
-    private var columnsItems: [[T]] {
-        var grid: [[T]] = Array(repeating: [], count: columns)
-        for (index, item) in items.enumerated() {
-            grid[index % columns].append(item)
+    private func splitData() -> [[DataCollection.Element]] {
+        var columnsData: [[DataCollection.Element]] = Array(repeating: [], count: columns)
+        
+        for (index, item) in data.enumerated() {
+            let columnIndex = index % columns
+            columnsData[columnIndex].append(item)
         }
-        return grid
+        
+        return columnsData
     }
     
     var body: some View {
         HStack(alignment: .top, spacing: spacing) {
             ForEach(0..<columns, id: \.self) { columnIndex in
                 LazyVStack(spacing: spacing) {
-                    ForEach(columnsItems[columnIndex]) { item in
+                    let colData = splitData()[columnIndex]
+                    
+                    ForEach(colData) { item in
                         content(item)
                     }
                 }
             }
         }
     }
-}
-// Modelo de dado para o exemplo
-struct PostItem: Identifiable {
-    let id = UUID()
-    let height: CGFloat
 }

@@ -6,15 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct NewCollectionView: View {
     @Environment(\.dismiss) var dismiss
+    
+    @Environment(\.modelContext) private var context
+    
     var formItems = ["Título", "Descrição"]
     @State var formData: [String: String] = [:]
     @State var toggle = false
-    @Binding var collections: [String]
-
     
+
     var body: some View {
         NavigationStack{
             VStack{
@@ -22,7 +25,6 @@ struct NewCollectionView: View {
                     .resizable()
                     .frame(width: 217, height: 129)
                     .foregroundStyle(.gray)
-                
                 
                 Form {
                     ForEach(formItems, id: \.self) { item in
@@ -33,7 +35,7 @@ struct NewCollectionView: View {
                     }
                     Toggle("Tornar coleção pública", isOn: $toggle)
                 }
-                .scrollContentBackground(.hidden) 
+                .scrollContentBackground(.hidden)
                 
             }
             .navigationTitle("Nova coleção")
@@ -48,25 +50,28 @@ struct NewCollectionView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                            let titulo = formData["Título", default: ""]
-                            let descricao = formData["Descrição", default: ""]
-                            
-                            if !titulo.isEmpty {
-                                collections.append(titulo)
-                            }
-                        dismiss()
+                        let titulo = formData["Título", default: ""]
+                        
+                        if !titulo.isEmpty {
+                            let novaColecao = Colecao(titulo: titulo)
+                            context.insert(novaColecao)
+                            dismiss()
+                        }
                     }) {
                         Image(systemName: "checkmark")
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.blue)
+                    // Opcional: Desabilita o botão se o título estiver vazio
+                    .disabled(formData["Título", default: ""].isEmpty)
                 }
             }
         }
     }
 }
 
-
 #Preview {
-    NewCollectionView(collections: .constant(["collection"]))
+    // 4. Atualizamos o preview para não precisar mais passar parâmetros
+    NewCollectionView()
+        .modelContainer(for: Colecao.self, inMemory: true)
 }

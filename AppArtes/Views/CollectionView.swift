@@ -1,56 +1,60 @@
-//
-//  HomeView.swift
-//  AppArtes
-//
-//  Created by Thais Cangucu on 24/04/26.
-//
-
 import SwiftUI
+import SwiftData
 
 struct CollectionView: View {
-    @State private var selectedTab = 0
+    // Recebe a coleção específica da tela anterior
+    @Bindable var colecao: Colecao
+    
     @State private var isShowingSheet = false
-    var items: [PostItem] = [PostItem(height: CGFloat.random(in: 150...300))]
+    @Environment(\.modelContext) private var context
+    
+    let numberOfColumns = 2
+    let gridSpacing: CGFloat = 12
+
     var body: some View {
-        NavigationStack{
-            ZStack{
-                MasonryGrid(items: items, columns: 2, spacing: 12) { item in
-                    RoundedRectangle(cornerRadius: 3)
-                        .frame(height: item.height)
-                        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
+        NavigationStack {
+            ScrollView {
+                // Usando colecao.obras em vez do antigo @Query
+                if colecao.obras.isEmpty {
+                    ContentUnavailableView(
+                        "Nenhuma Obra",
+                        systemImage: "photo.on.rectangle",
+                        description: Text("Toque no + para adicionar arte a esta coleção.")
+                    )
+                    .padding(.top, 50)
+                } else {
+                    WaterfallGrid(data: colecao.obras, columns: numberOfColumns, spacing: gridSpacing) { item in
+                        if let imageData = item.image, let uiImage = UIImage(data: imageData) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(minWidth: 0, maxWidth: .infinity)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.top)
                 }
-                .padding(.horizontal)
             }
+            .navigationTitle(colecao.titulo) // Título dinâmico da coleção
+            .id(colecao.obras.count)
             .sheet(isPresented: $isShowingSheet) {
-                NewItem()
+                // Passamos a coleção para a tela de criação
+                NewItem(colecao: colecao)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        //setting button
-                    }
-                    label:{
-                        Image(systemName: "ellipsis")
-                    }
-                }
-                ToolbarItem(placement: .bottomBar) {
-                    Button {
                         isShowingSheet.toggle()
                     } label: {
-                        // aumentar o tamanho da area de clique deste botao
                         Image(systemName: "plus")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundColor(.black)
-                            .background(Circle().fill(Color.clear))
-                    }                }
+                            .font(.system(size: 20, weight: .semibold))
+                            .frame(width: 44, height: 44)
+                            .foregroundColor(.blue)
+                    }
+                }
             }
-            .navigationTitle("Minha Coleção")
-            
         }
     }
-}
-
-#Preview {
-    CollectionView()
 }
