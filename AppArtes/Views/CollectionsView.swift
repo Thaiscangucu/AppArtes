@@ -64,7 +64,6 @@ struct CollectionsView: View {
                         isShowingSheet.toggle()
                     } label: {
                         Image(systemName: "plus")
-                            .background(Circle().fill(Color(white: 0.95)).frame(width: 32, height: 32))
                             .foregroundColor(.black)
                     }
                 }

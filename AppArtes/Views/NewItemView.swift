@@ -8,6 +8,8 @@
 import SwiftUI
 import SwiftData
 import UIKit
+import AVFoundation
+import Photos
 
 struct NewItem: View {
     // 1. Recebe a coleção para a qual a obra está sendo adicionada
@@ -108,11 +110,14 @@ struct NewItem: View {
                 }
             }
             .confirmationDialog("Escolha uma opção", isPresented: $showDialog, titleVisibility: .visible) {
+                
                 Button("Câmera") {
+                    checkCameraPermission()
                     sourceType = .camera
                     showImagePicker = true
                 }
                 Button("Galeria") {
+                    checkPhotoPermission()
                     sourceType = .photoLibrary
                     showImagePicker = true
                 }
@@ -124,6 +129,34 @@ struct NewItem: View {
             }
         }
     }
+    func checkCameraPermission() {
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        
+        switch status {
+        case .notDetermined:
+            // Primeira vez: o sistema pedirá permissão automaticamente
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                if granted { print("Acesso concedido") }
+            }
+        case .denied, .restricted:
+            // Usuário já negou antes: você pode mostrar um alerta sugerindo ir às Configurações
+            print("Acesso negado")
+        case .authorized:
+            print("Acesso já autorizado")
+        @unknown default:
+            break
+        }
+    }
+    func checkPhotoPermission() {
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        
+        if status == .notDetermined {
+            PHPhotoLibrary.requestAuthorization(for: .readWrite) { newStatus in
+                if newStatus == .authorized { print("Acesso concedido") }
+            }
+        }
+    }
+
 }
 
 
