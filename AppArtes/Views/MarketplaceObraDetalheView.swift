@@ -74,10 +74,16 @@ struct MarketplaceObraDetalheView: View {
 
     private var heroSection: some View {
         ZStack(alignment: .bottom) {
-            Image(obra.imageName)
-                .resizable()
-                .scaledToFill()
-                .frame(maxWidth: .infinity, minHeight: 460, maxHeight: 460)
+            Group {
+                if UIImage(named: obra.imageName) != nil {
+                    Image(obra.imageName)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    Rectangle().fill(Color.obskaInk)
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 460, maxHeight: 460)
 
             // Nav buttons overlay
             VStack {

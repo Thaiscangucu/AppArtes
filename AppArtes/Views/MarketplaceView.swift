@@ -182,11 +182,17 @@ private struct ColecaoDestaqueCard: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             // Cover image
-            Image(colecao.coverImageName)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 200, height: 160)
-                .clipped()
+            Group {
+                if UIImage(named: colecao.coverImageName) != nil {
+                    Image(colecao.coverImageName)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    Rectangle().fill(Color.obskaInk)
+                }
+            }
+            .frame(width: 200, height: 160)
+            .clipped()
 
             // Gradient overlay
             LinearGradient(
@@ -240,11 +246,23 @@ struct ObraMarketCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Image(obra.imageName)
-                .resizable()
-                .scaledToFit()
-                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 1)
-                .clipShape(RoundedRectangle(cornerRadius: Obska.radiusCard))
+            Group {
+                if UIImage(named: obra.imageName) != nil {
+                    Image(obra.imageName)
+                        .resizable()
+                        .scaledToFit()
+                } else {
+                    Rectangle()
+                        .fill(Color.obskaElevated)
+                        .aspectRatio(4/3, contentMode: .fit)
+                        .overlay(
+                            Image(systemName: "photo")
+                                .foregroundStyle(Color.obskaHair)
+                        )
+                }
+            }
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 120)
+            .clipShape(RoundedRectangle(cornerRadius: Obska.radiusCard))
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(obra.titulo)
