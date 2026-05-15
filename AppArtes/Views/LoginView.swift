@@ -61,15 +61,7 @@ struct LoginView: View {
                             .multilineTextAlignment(.center)
                     }
 
-                    #if DEBUG
-                    Button("Entrar sem Apple (dev)") {
-                        auth.signIn(userId: "dev-user", fullName: "Dev User")
-                    }
-                    .font(.obskaMonoCaption(11))
-                    .foregroundStyle(Color.obskaInk2)
-                    #endif
-
-                    Text("Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.")
+Text("Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.")
                         .font(.obskaMonoCaption(10))
                         .tracking(0.2)
                         .foregroundStyle(Color.obskaInk2)
