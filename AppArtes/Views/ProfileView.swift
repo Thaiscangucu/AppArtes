@@ -10,31 +10,28 @@ struct ProfileView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
                     headerSection
                     statsSection
-                    Divider().padding(.vertical, 8)
+                    Divider()
+                        .background(Color.obskaHair)
+                        .padding(.vertical, 8)
                     obrasSection
                 }
             }
+            .background(Color.obskaPaper)
             .navigationTitle("Perfil")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        showEditProfile = true
-                    } label: {
-                        Text("Editar")
-                            .font(.subheadline)
-                    }
+                    Button("Editar") { showEditProfile = true }
+                        .font(.system(size: 15))
+                        .foregroundStyle(Color.obskaAccent)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
+                    ObskaCircleButton(systemName: "gearshape") {
                         showSettings = true
-                    } label: {
-                        Image(systemName: "gearshape")
-                            .foregroundStyle(.primary)
                     }
                 }
             }
@@ -47,73 +44,105 @@ struct ProfileView: View {
         }
     }
 
-    private var headerSection: some View {
-        VStack(spacing: 12) {
-            ZStack {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.indigo, Color.purple],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 88, height: 88)
-                Text(auth.initials)
-                    .font(.system(size: 32, weight: .bold))
-                    .foregroundStyle(.white)
-            }
+    // MARK: - Header
 
-            VStack(spacing: 4) {
+    private var headerSection: some View {
+        HStack(alignment: .top, spacing: 18) {
+            // Square avatar with Fraunces initials
+            ZStack {
+                RoundedRectangle(cornerRadius: Obska.radiusAvatar)
+                    .fill(Color.obskaElevated)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Obska.radiusAvatar)
+                            .stroke(Color.obskaHair, lineWidth: 1)
+                    )
+                Text(auth.initials)
+                    .font(.fraunces(38, weight: .medium))
+                    .tracking(-1)
+                    .foregroundStyle(Color.obskaAccent)
+            }
+            .frame(width: 88, height: 88)
+
+            VStack(alignment: .leading, spacing: 4) {
                 Text(auth.displayName)
-                    .font(.title2).bold()
+                    .font(.fraunces(26))
+                    .tracking(-0.4)
+                    .foregroundStyle(Color.obskaInk)
+                    .lineLimit(1)
+
                 if !auth.handle.isEmpty {
-                    Text(auth.handle)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                    Text(auth.handle.uppercased())
+                        .font(.obskaMonoCaption(13))
+                        .tracking(0.6)
+                        .foregroundStyle(Color.obskaInk2)
                 }
+
                 if !auth.bio.isEmpty {
                     Text(auth.bio)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
-                        .padding(.top, 2)
+                        .font(.system(size: 13))
+                        .foregroundStyle(Color.obskaInk)
+                        .lineLimit(3)
+                        .padding(.top, 6)
                 }
             }
+            .padding(.top, 4)
         }
-        .padding(.top, 24)
+        .padding(.horizontal, 20)
+        .padding(.top, 20)
         .padding(.bottom, 20)
     }
 
+    // MARK: - Stats
+
     private var statsSection: some View {
         HStack(spacing: 0) {
-            statItem(valor: obras.count, label: "Obras")
-            Divider().frame(height: 36)
-            statItem(valor: colecoes.count, label: "Coleções")
-            Divider().frame(height: 36)
-            statItem(valor: 3, label: "Lances")
+            statItem(valor: obras.count, label: "OBRAS")
+            Divider().frame(height: 36).background(Color.obskaHair)
+            statItem(valor: colecoes.count, label: "COLEÇÕES")
+            Divider().frame(height: 36).background(Color.obskaHair)
+            statItem(valor: obras.compactMap(\.preco).count, label: "LANCES")
         }
-        .padding(.bottom, 16)
+        .padding(.vertical, 14)
+        .overlay(
+            Rectangle().frame(height: 1).foregroundStyle(Color.obskaHair),
+            alignment: .top
+        )
+        .overlay(
+            Rectangle().frame(height: 1).foregroundStyle(Color.obskaHair),
+            alignment: .bottom
+        )
     }
 
     private func statItem(valor: Int, label: String) -> some View {
-        VStack(spacing: 2) {
+        VStack(spacing: 6) {
             Text("\(valor)")
-                .font(.title3).bold()
+                .font(.fraunces(22, weight: .medium))
+                .foregroundStyle(Color.obskaInk)
             Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.obskaMonoCaption(10))
+                .tracking(1.4)
+                .foregroundStyle(Color.obskaInk2)
         }
         .frame(maxWidth: .infinity)
     }
 
+    // MARK: - Obras Grid
+
     @ViewBuilder
     private var obrasSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Minhas Obras")
-                .font(.headline)
-                .padding(.horizontal)
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Text("Minhas obras")
+                    .font(.fraunces(22))
+                    .tracking(-0.3)
+                    .foregroundStyle(Color.obskaInk)
+                Spacer()
+                Text("VER TODAS")
+                    .font(.obskaMonoCaption(11))
+                    .tracking(1.2)
+                    .foregroundStyle(Color.obskaInk2)
+            }
+            .padding(.horizontal, 20)
 
             if obras.isEmpty {
                 ContentUnavailableView(
@@ -126,17 +155,35 @@ struct ProfileView: View {
                 let columns = [GridItem(.flexible(), spacing: 2), GridItem(.flexible(), spacing: 2)]
                 LazyVGrid(columns: columns, spacing: 2) {
                     ForEach(obras) { obra in
-                        if let data = obra.image, let uiImage = UIImage(data: data) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(maxWidth: .infinity)
-                                .aspectRatio(1, contentMode: .fill)
-                                .clipped()
-                        } else {
-                            Rectangle()
-                                .fill(Color(.systemGray5))
-                                .aspectRatio(1, contentMode: .fill)
+                        ZStack(alignment: .bottomTrailing) {
+                            if let data = obra.image, let uiImage = UIImage(data: data) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(maxWidth: .infinity)
+                                    .aspectRatio(1, contentMode: .fill)
+                                    .clipped()
+                            } else {
+                                Rectangle()
+                                    .fill(Color.obskaElevated)
+                                    .aspectRatio(1, contentMode: .fill)
+                                    .overlay(
+                                        Image(systemName: "photo")
+                                            .foregroundStyle(Color.obskaHair)
+                                    )
+                            }
+
+                            // Price tag overlay
+                            if let preco = obra.preco {
+                                Text(preco, format: .currency(code: "BRL").presentation(.narrow))
+                                    .font(.obskaMonoCaption(9))
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 5)
+                                    .padding(.vertical, 3)
+                                    .background(.black.opacity(0.45))
+                                    .clipShape(RoundedRectangle(cornerRadius: 2))
+                                    .padding(6)
+                            }
                         }
                     }
                 }

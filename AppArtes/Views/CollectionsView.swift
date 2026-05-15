@@ -15,7 +15,7 @@ struct CollectionsView: View {
                     }
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         Button(role: .destructive) {
                             context.delete(colecao)
@@ -26,6 +26,8 @@ struct CollectionsView: View {
                 }
             }
             .listStyle(.plain)
+            .background(Color.obskaPaper)
+            .scrollContentBackground(.hidden)
             .overlay {
                 if collections.isEmpty {
                     ContentUnavailableView(
@@ -41,7 +43,12 @@ struct CollectionsView: View {
                     Button {
                         isShowingSheet.toggle()
                     } label: {
-                        Image(systemName: "plus").foregroundStyle(.primary)
+                        Image(systemName: "plus")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 32, height: 32)
+                            .background(Color.obskaAccent)
+                            .clipShape(Circle())
                     }
                 }
             }
@@ -52,6 +59,8 @@ struct CollectionsView: View {
     }
 }
 
+// MARK: - Collection Card
+
 private struct ColecaoCard: View {
     let colecao: Colecao
 
@@ -60,7 +69,8 @@ private struct ColecaoCard: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
+        ZStack(alignment: .bottom) {
+            // Background photo or gradient placeholder
             Group {
                 if let uiImage = coverImage {
                     Image(uiImage: uiImage)
@@ -70,39 +80,69 @@ private struct ColecaoCard: View {
                     Rectangle()
                         .fill(
                             LinearGradient(
-                                colors: [Color(.systemGray4), Color(.systemGray2)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
+                                colors: [Color.obskaInk2, Color.obskaInk],
+                                startPoint: .topLeading, endPoint: .bottomTrailing
                             )
                         )
-                        .overlay {
-                            Image(systemName: "photo.artframe")
-                                .font(.system(size: 40))
-                                .foregroundStyle(.white.opacity(0.4))
-                        }
                 }
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 200)
+            .frame(height: 184)
             .clipped()
 
+            // Gradient overlay
             LinearGradient(
-                colors: [.clear, .black.opacity(0.75)],
-                startPoint: .center,
-                endPoint: .bottom
+                colors: [.clear, .black.opacity(0.8)],
+                startPoint: .center, endPoint: .bottom
             )
 
+            // Eyebrow (top-left)
+            VStack {
+                HStack {
+                    Text("\(String(format: "%02d", colecao.obras.count)) OBRAS")
+                        .font(.obskaMonoCaption(10))
+                        .tracking(1.4)
+                        .foregroundStyle(.white.opacity(0.75))
+                    Spacer()
+                }
+                Spacer()
+            }
+            .padding(14)
+
+            // Title + total (bottom)
             VStack(alignment: .leading, spacing: 4) {
                 Text(colecao.titulo)
-                    .font(.title2).bold()
+                    .font(.fraunces(22))
+                    .tracking(-0.4)
                     .foregroundStyle(.white)
-                Text("\(colecao.obras.count) \(colecao.obras.count == 1 ? "obra" : "obras")")
-                    .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.75))
+                    .lineLimit(1)
+
+                HStack {
+                    Text("TOTAL")
+                        .font(.obskaMonoCaption(10))
+                        .tracking(0.8)
+                        .foregroundStyle(.white.opacity(0.65))
+                    Spacer()
+                    if let total = colecaoTotal(colecao) {
+                        Text(total, format: .currency(code: "BRL"))
+                            .font(.obskaMonoCaption(11))
+                            .foregroundStyle(.white)
+                    } else {
+                        Text("—")
+                            .font(.obskaMonoCaption(11))
+                            .foregroundStyle(.white.opacity(0.45))
+                    }
+                }
             }
-            .padding(16)
+            .padding(14)
         }
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: Obska.radiusCard))
         .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+    }
+
+    private func colecaoTotal(_ c: Colecao) -> Double? {
+        let precos = c.obras.compactMap(\.preco)
+        guard !precos.isEmpty else { return nil }
+        return precos.reduce(0, +)
     }
 }

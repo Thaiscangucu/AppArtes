@@ -5,52 +5,52 @@ struct LoginView: View {
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            Color.obskaPaper.ignoresSafeArea()
 
             VStack(spacing: 0) {
                 Spacer()
 
-                VStack(spacing: 16) {
-                    Image(systemName: "photo.artframe")
-                        .font(.system(size: 64))
-                        .foregroundStyle(.white)
+                VStack(alignment: .leading, spacing: 0) {
+                    ObskaMark(size: 52, color: .obskaInk, accent: .obskaAccent)
 
-                    Text("AppArtes")
-                        .font(.system(size: 40, weight: .bold))
-                        .foregroundStyle(.white)
+                    Text("OBSKA")
+                        .font(.fraunces(52))
+                        .tracking(-1.5)
+                        .foregroundStyle(Color.obskaInk)
+                        .padding(.top, 20)
 
-                    Text("Sua galeria de arte pessoal")
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.6))
+                    Text("Sua galeria de arte pessoal.")
+                        .font(.obskaMonoCaption(13))
+                        .tracking(0.4)
+                        .foregroundStyle(Color.obskaInk2)
+                        .padding(.top, 8)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 32)
 
                 Spacer()
 
-                VStack(spacing: 16) {
+                VStack(spacing: 14) {
                     Button {
                         auth.signIn(userId: "mock-user", fullName: nil)
                     } label: {
                         HStack(spacing: 10) {
                             Image(systemName: "applelogo")
-                                .font(.system(size: 18, weight: .medium))
+                                .font(.system(size: 16, weight: .medium))
                             Text("Continuar com Apple")
-                                .font(.system(size: 17, weight: .medium))
                         }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 52)
-                        .background(.white)
-                        .foregroundStyle(.black)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .obskaCTA()
                     }
 
                     Text("Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.")
-                        .font(.caption2)
-                        .foregroundStyle(.white.opacity(0.4))
+                        .font(.obskaMonoCaption(10))
+                        .tracking(0.2)
+                        .foregroundStyle(Color.obskaInk2)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, 24)
+                        .padding(.horizontal, 8)
                 }
                 .padding(.horizontal, 32)
-                .padding(.bottom, 48)
+                .padding(.bottom, 52)
             }
         }
     }

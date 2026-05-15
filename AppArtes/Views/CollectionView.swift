@@ -9,7 +9,7 @@ struct CollectionView: View {
     @Environment(\.modelContext) private var context
 
     let numberOfColumns = 2
-    let gridSpacing: CGFloat = 12
+    let gridSpacing: CGFloat = 10
 
     var body: some View {
         ScrollView {
@@ -30,7 +30,7 @@ struct CollectionView: View {
                         Button(role: .destructive) {
                             removerObra(item)
                         } label: {
-                            Label("Remover da coleção", systemImage: "trash")
+                            Label("Excluir obra", systemImage: "trash")
                         }
                     }
                 }
@@ -38,6 +38,7 @@ struct CollectionView: View {
                 .padding(.top)
             }
         }
+        .background(Color.obskaPaper)
         .navigationTitle(colecao.titulo)
         .id(colecao.obras.count)
         .sheet(isPresented: $showAddSheet) {
@@ -52,16 +53,16 @@ struct CollectionView: View {
                     showAddSheet.toggle()
                 } label: {
                     Image(systemName: "plus")
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundColor(.blue)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 32, height: 32)
+                        .background(Color.obskaAccent)
+                        .clipShape(Circle())
                 }
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
+                ObskaCircleButton(systemName: "pencil") {
                     showEditSheet.toggle()
-                } label: {
-                    Image(systemName: "pencil")
-                        .foregroundColor(.primary)
                 }
             }
         }
@@ -73,47 +74,55 @@ struct CollectionView: View {
     }
 }
 
-// MARK: - Obra Card
+// MARK: - Artwork Card
 
 private struct ObraColecaoCard: View {
     let obra: ObraDeArte
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            // Flush photo
             if let imageData = obra.image, let uiImage = UIImage(data: imageData) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFit()
-                    .frame(maxWidth: .infinity)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .frame(maxWidth: .infinity, minHeight: 1)
             }
 
-            VStack(alignment: .leading, spacing: 4) {
+            // Text area
+            VStack(alignment: .leading, spacing: 6) {
                 Text(obra.titulo)
-                    .font(.system(size: 13, weight: .semibold))
-                    .lineLimit(1)
+                    .font(.fraunces(16))
+                    .tracking(-0.2)
+                    .foregroundStyle(Color.obskaInk)
+                    .lineLimit(2)
 
                 if !obra.descricao.isEmpty {
                     Text(obra.descricao)
                         .font(.system(size: 12))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.obskaInk2)
                         .lineLimit(3)
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
+                // Footer divider + price
                 if let preco = obra.preco {
-                    Text(preco, format: .currency(code: "BRL"))
-                        .font(.system(size: 11, weight: .medium))
-                        .foregroundStyle(.secondary)
+                    Divider()
+                        .background(Color.obskaHair)
                         .padding(.top, 2)
+
+                    Text(preco, format: .currency(code: "BRL"))
+                        .font(.fraunces(13, weight: .medium))
+                        .foregroundStyle(Color.obskaAccent)
                 }
             }
-            .padding(.horizontal, 6)
-            .padding(.top, 8)
-            .padding(.bottom, 10)
+            .padding(10)
         }
-        .background(Color(.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.07), radius: 4, x: 0, y: 2)
+        .background(Color.obskaElevated)
+        .overlay(
+            RoundedRectangle(cornerRadius: Obska.radiusCard)
+                .stroke(Color.obskaHair, lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: Obska.radiusCard))
     }
 }

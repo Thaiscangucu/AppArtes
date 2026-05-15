@@ -10,45 +10,58 @@ struct DetalheObraView: View {
     @State private var showDeleteAlert = false
 
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
+                // Hero image
                 if let imageData = obra.image, let uiImage = UIImage(data: imageData) {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFit()
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity, minHeight: 1)
                 }
 
-                VStack(alignment: .leading, spacing: 16) {
+                // Content
+                VStack(alignment: .leading, spacing: 20) {
+                    // Title + date
                     VStack(alignment: .leading, spacing: 4) {
                         Text(obra.titulo)
-                            .font(.title2).bold()
+                            .font(.fraunces(28))
+                            .tracking(-0.6)
+                            .foregroundStyle(Color.obskaInk)
+
                         Text(obra.dataCriacao.formatted(date: .long, time: .omitted))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(.obskaMonoCaption(11))
+                            .tracking(0.4)
+                            .foregroundStyle(Color.obskaInk2)
                     }
 
                     if !obra.descricao.isEmpty {
                         Text(obra.descricao)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
+                            .font(.system(size: 15))
+                            .lineSpacing(4)
+                            .foregroundStyle(Color.obskaInk)
                     }
 
-                    Divider()
+                    Divider().background(Color.obskaHair)
 
+                    // Info chips
                     VStack(spacing: 0) {
                         if let preco = obra.preco {
-                            infoLinha(label: "Preço", valor: preco.formatted(.currency(code: "BRL")))
+                            infoLinha(label: "PREÇO", valor: preco.formatted(.currency(code: "BRL")))
                         }
-                        infoLinha(label: "Formato", valor: obra.formatoArquivo)
+                        infoLinha(label: "FORMATO", valor: obra.formatoArquivo.uppercased())
                     }
                 }
-                .padding()
+                .padding(20)
                 .padding(.bottom, 32)
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
+        .background(Color.obskaPaper)
+        .ignoresSafeArea(edges: .top)
+        .navigationBarHidden(true)
+        .overlay(alignment: .top) {
+            navOverlay
+        }
         .sheet(isPresented: $showEditSheet) {
             EditObraView(obra: obra)
         }
@@ -61,48 +74,52 @@ struct DetalheObraView: View {
         } message: {
             Text("Essa ação não pode ser desfeita.")
         }
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button { dismiss() } label: {
-                    Image(systemName: "chevron.left")
-                        .padding(8)
-                        .background(Circle().fill(Color(.systemFill)))
-                        .foregroundStyle(.primary)
+    }
+
+    // MARK: - Nav overlay (over hero image)
+
+    private var navOverlay: some View {
+        HStack {
+            ObskaCircleButton(systemName: "chevron.left", frosted: true) { dismiss() }
+            Spacer()
+            Menu {
+                Button { showEditSheet = true } label: {
+                    Label("Editar obra", systemImage: "pencil")
                 }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Button {
-                        showEditSheet = true
-                    } label: {
-                        Label("Editar obra", systemImage: "pencil")
-                    }
-                    Button(role: .destructive) {
-                        showDeleteAlert = true
-                    } label: {
-                        Label("Excluir obra", systemImage: "trash")
-                    }
+                Button(role: .destructive) {
+                    showDeleteAlert = true
                 } label: {
+                    Label("Excluir obra", systemImage: "trash")
+                }
+            } label: {
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: Obska.navButtonSize, height: Obska.navButtonSize)
                     Image(systemName: "ellipsis")
-                        .padding(8)
-                        .background(Circle().fill(Color(.systemFill)))
-                        .foregroundStyle(.primary)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(Color(UIColor.label))
                 }
             }
         }
+        .padding(.horizontal, 16)
+        .padding(.top, 60)
     }
 
-    @ViewBuilder
+    // MARK: - Info row
+
     private func infoLinha(label: String, valor: String) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Divider()
-            HStack {
+        VStack(alignment: .leading, spacing: 4) {
+            Divider().background(Color.obskaHair)
+            HStack(alignment: .center) {
                 Text(label)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(width: 64, alignment: .leading)
+                    .font(.obskaMonoCaption(10))
+                    .tracking(1.2)
+                    .foregroundStyle(Color.obskaInk2)
+                    .frame(width: 72, alignment: .leading)
                 Text(valor)
-                    .font(.subheadline)
+                    .font(.system(size: 15, weight: .medium))
+                    .foregroundStyle(Color.obskaInk)
             }
         }
         .padding(.vertical, 8)
