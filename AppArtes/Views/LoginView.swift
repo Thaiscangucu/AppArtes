@@ -1,7 +1,9 @@
 import SwiftUI
+import AuthenticationServices
 
 struct LoginView: View {
     @Environment(AuthState.self) private var auth
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         ZStack {
@@ -31,16 +33,21 @@ struct LoginView: View {
                 Spacer()
 
                 VStack(spacing: 14) {
-                    Button {
-                        auth.signIn(userId: "mock-user", fullName: nil)
-                    } label: {
-                        HStack(spacing: 10) {
-                            Image(systemName: "applelogo")
-                                .font(.system(size: 16, weight: .medium))
-                            Text("Continuar com Apple")
-                        }
-                        .obskaCTA()
+                    SignInWithAppleButton(.continue) { request in
+                        request.requestedScopes = [.fullName, .email]
+                    } onCompletion: { result in
+                        guard case .success(let authorization) = result,
+                              let credential = authorization.credential as? ASAuthorizationAppleIDCredential
+                        else { return }
+
+                        let name = [credential.fullName?.givenName, credential.fullName?.familyName]
+                            .compactMap { $0 }
+                            .joined(separator: " ")
+                        auth.signIn(userId: credential.user, fullName: name.isEmpty ? nil : name)
                     }
+                    .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                    .frame(height: 50)
+                    .clipShape(RoundedRectangle(cornerRadius: Obska.radiusButton))
 
                     Text("Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.")
                         .font(.obskaMonoCaption(10))
