@@ -4,7 +4,8 @@ import SwiftData
 struct CollectionView: View {
     @Bindable var colecao: Colecao
 
-    @State private var isShowingSheet = false
+    @State private var showAddSheet = false
+    @State private var showEditSheet = false
     @Environment(\.modelContext) private var context
 
     let numberOfColumns = 2
@@ -25,6 +26,13 @@ struct CollectionView: View {
                         ObraColecaoCard(obra: item)
                     }
                     .buttonStyle(PlainButtonStyle())
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            removerObra(item)
+                        } label: {
+                            Label("Remover da coleção", systemImage: "trash")
+                        }
+                    }
                 }
                 .padding(.horizontal)
                 .padding(.top)
@@ -32,23 +40,40 @@ struct CollectionView: View {
         }
         .navigationTitle(colecao.titulo)
         .id(colecao.obras.count)
-        .sheet(isPresented: $isShowingSheet) {
+        .sheet(isPresented: $showAddSheet) {
             NewItem(colecao: colecao)
+        }
+        .sheet(isPresented: $showEditSheet) {
+            EditCollectionView(colecao: colecao)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    isShowingSheet.toggle()
+                    showAddSheet.toggle()
                 } label: {
                     Image(systemName: "plus")
                         .font(.system(size: 20, weight: .semibold))
-                        .frame(width: 44, height: 44)
                         .foregroundColor(.blue)
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    showEditSheet.toggle()
+                } label: {
+                    Image(systemName: "pencil")
+                        .foregroundColor(.primary)
                 }
             }
         }
     }
+
+    private func removerObra(_ obra: ObraDeArte) {
+        colecao.obras.removeAll { $0.id == obra.id }
+        context.delete(obra)
+    }
 }
+
+// MARK: - Obra Card
 
 private struct ObraColecaoCard: View {
     let obra: ObraDeArte
@@ -59,19 +84,36 @@ private struct ObraColecaoCard: View {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFit()
-                    .frame(minWidth: 0, maxWidth: .infinity)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .frame(maxWidth: .infinity)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
             }
 
-            if let preco = obra.preco {
-                Text(preco, format: .currency(code: "BRL"))
-                    .font(.system(size: 13, weight: .bold))
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 6)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(obra.titulo)
+                    .font(.system(size: 13, weight: .semibold))
+                    .lineLimit(1)
+
+                if !obra.descricao.isEmpty {
+                    Text(obra.descricao)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(3)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                if let preco = obra.preco {
+                    Text(preco, format: .currency(code: "BRL"))
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(.secondary)
+                        .padding(.top, 2)
+                }
             }
+            .padding(.horizontal, 6)
+            .padding(.top, 8)
+            .padding(.bottom, 10)
         }
-        .background(obra.preco != nil ? Color(white: 0.97) : Color.clear)
+        .background(Color(white: 0.97))
         .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: obra.preco != nil ? .black.opacity(0.07) : .clear, radius: 5, x: 0, y: 3)
+        .shadow(color: .black.opacity(0.07), radius: 4, x: 0, y: 2)
     }
 }
