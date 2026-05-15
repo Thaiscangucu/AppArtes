@@ -1,10 +1,8 @@
 import SwiftUI
-import AuthenticationServices
 
 struct LoginView: View {
     @Environment(AuthState.self) private var auth
     @Environment(\.colorScheme) private var colorScheme
-    @State private var errorMessage: String?
 
     var body: some View {
         ZStack {
@@ -34,34 +32,23 @@ struct LoginView: View {
                 Spacer()
 
                 VStack(spacing: 14) {
-                    SignInWithAppleButton(.continue) { request in
-                        request.requestedScopes = [.fullName, .email]
-                    } onCompletion: { result in
-                        switch result {
-                        case .success(let authorization):
-                            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else { return }
-                            let name = [credential.fullName?.givenName, credential.fullName?.familyName]
-                                .compactMap { $0 }
-                                .joined(separator: " ")
-                            auth.signIn(userId: credential.user, fullName: name.isEmpty ? nil : name)
-                        case .failure(let error as ASAuthorizationError) where error.code == .canceled:
-                            break
-                        case .failure(let error):
-                            errorMessage = error.localizedDescription
+                    Button {
+                        auth.signIn(userId: "mock-apple-user", fullName: "Artista OBSKA")
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: "applelogo")
+                                .font(.system(size: 16, weight: .medium))
+                            Text("Continuar com Apple")
+                                .font(.system(size: 16, weight: .semibold))
                         }
-                    }
-                    .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-                    .frame(height: 50)
-                    .cornerRadius(Obska.radiusButton)
-
-                    if let msg = errorMessage {
-                        Text(msg)
-                            .font(.obskaMonoCaption(11))
-                            .foregroundStyle(.red)
-                            .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(colorScheme == .dark ? Color.white : Color.black)
+                        .foregroundStyle(colorScheme == .dark ? Color.black : Color.white)
+                        .cornerRadius(Obska.radiusButton)
                     }
 
-Text("Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.")
+                    Text("Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.")
                         .font(.obskaMonoCaption(10))
                         .tracking(0.2)
                         .foregroundStyle(Color.obskaInk2)
