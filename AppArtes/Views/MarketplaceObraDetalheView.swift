@@ -39,8 +39,9 @@ struct MarketplaceObraDetalheView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     heroSection
                     contentSection
-                        .padding(.bottom, 220) // space for sticky CTA
+                        .padding(.bottom, 220)
                 }
+                .frame(maxWidth: .infinity)
             }
             .ignoresSafeArea(edges: .top)
             .background(Color.obskaPaper)
@@ -164,12 +165,14 @@ struct MarketplaceObraDetalheView: View {
                 .padding(.top, 20)
 
             // Spec chips
-            HStack(spacing: 8) {
-                specChip(label: "ANO", value: "\(obra.ano)")
-                specChip(label: "DIM.", value: obra.dimensoes)
-                specChip(label: "TÉCNICA", value: "Óleo sobre tela")
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    specChip(label: "ANO", value: "\(obra.ano)")
+                    specChip(label: "DIM.", value: obra.dimensoes)
+                    specChip(label: "TÉCNICA", value: "Óleo sobre tela")
+                }
+                .padding(.horizontal, 20)
             }
-            .padding(.horizontal, 20)
             .padding(.top, 18)
 
             // Bid section
