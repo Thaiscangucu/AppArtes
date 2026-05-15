@@ -1,5 +1,4 @@
 import SwiftUI
-import AuthenticationServices
 
 struct LoginView: View {
     @Environment(AuthState.self) private var auth
@@ -28,20 +27,21 @@ struct LoginView: View {
                 Spacer()
 
                 VStack(spacing: 16) {
-                    SignInWithAppleButton(.signIn) { request in
-                        request.requestedScopes = [.fullName, .email]
-                    } onCompletion: { result in
-                        switch result {
-                        case .success(let auth):
-                            guard let credential = auth.credential as? ASAuthorizationAppleIDCredential else { return }
-                            AuthState.shared.signIn(userId: credential.user, fullName: credential.fullName)
-                        case .failure:
-                            break
+                    Button {
+                        auth.signIn(userId: "mock-user", fullName: nil)
+                    } label: {
+                        HStack(spacing: 10) {
+                            Image(systemName: "applelogo")
+                                .font(.system(size: 18, weight: .medium))
+                            Text("Continuar com Apple")
+                                .font(.system(size: 17, weight: .medium))
                         }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 52)
+                        .background(.white)
+                        .foregroundStyle(.black)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
                     }
-                    .signInWithAppleButtonStyle(.white)
-                    .frame(height: 52)
-                    .clipShape(RoundedRectangle(cornerRadius: 14))
 
                     Text("Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.")
                         .font(.caption2)

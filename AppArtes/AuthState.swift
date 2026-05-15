@@ -1,5 +1,4 @@
 import Foundation
-import Contacts
 import Observation
 
 @Observable
@@ -15,13 +14,10 @@ final class AuthState {
         isSignedIn = UserDefaults.standard.string(forKey: "appleUserId") != nil
     }
 
-    func signIn(userId: String, fullName: PersonNameComponents?) {
+    func signIn(userId: String, fullName: String? = nil) {
         UserDefaults.standard.set(userId, forKey: userIdKey)
-        if let name = fullName {
-            let formatted = PersonNameComponentsFormatter().string(from: name)
-            if !formatted.isEmpty {
-                UserDefaults.standard.set(formatted, forKey: userNameKey)
-            }
+        if let name = fullName, !name.isEmpty {
+            UserDefaults.standard.set(name, forKey: userNameKey)
         }
         isSignedIn = true
     }
