@@ -1,11 +1,12 @@
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     @State private var selectedTab = 0
     @State private var isShowingSheet = false
-    
+    @Environment(\.modelContext) private var context
+
     var body: some View {
-        
         ZStack(alignment: .bottom) {
             TabView(selection: $selectedTab) {
                 HomeView()
@@ -31,6 +32,7 @@ struct ContentView: View {
                     .tag(4)
             }
         }
+        .task { DataSeeder.seedIfNeeded(context: context) }
     }
 }
 

@@ -112,7 +112,7 @@ private struct ObraColecaoCard: View {
             .padding(.top, 8)
             .padding(.bottom, 10)
         }
-        .background(Color(white: 0.97))
+        .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.07), radius: 4, x: 0, y: 2)
     }

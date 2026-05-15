@@ -41,7 +41,7 @@ struct CollectionsView: View {
                     Button {
                         isShowingSheet.toggle()
                     } label: {
-                        Image(systemName: "plus").foregroundColor(.black)
+                        Image(systemName: "plus").foregroundStyle(.primary)
                     }
                 }
             }

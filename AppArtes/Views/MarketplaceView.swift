@@ -284,7 +284,7 @@ private struct ColecaoDestaqueCard: View {
             .padding(10)
         }
         .frame(width: 200)
-        .background(Color(white: 0.95))
+        .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
     }
@@ -325,7 +325,7 @@ struct ObraMarketCard: View {
             .padding(.horizontal, 8)
             .padding(.vertical, 8)
         }
-        .background(Color(white: 0.97))
+        .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.07), radius: 5, x: 0, y: 3)
     }

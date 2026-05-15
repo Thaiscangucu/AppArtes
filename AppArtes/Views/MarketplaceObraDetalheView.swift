@@ -136,8 +136,8 @@ struct MarketplaceObraDetalheView: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
-                    .background(.black)
-                    .foregroundStyle(.white)
+                    .background(Color.primary)
+                    .foregroundStyle(Color(UIColor.systemBackground))
                     .clipShape(RoundedRectangle(cornerRadius: 14))
             }
             .padding(.top, 4)

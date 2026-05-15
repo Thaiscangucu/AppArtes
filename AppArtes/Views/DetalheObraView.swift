@@ -66,8 +66,8 @@ struct DetalheObraView: View {
                 Button { dismiss() } label: {
                     Image(systemName: "chevron.left")
                         .padding(8)
-                        .background(Circle().fill(Color(white: 0.95)))
-                        .foregroundColor(.black)
+                        .background(Circle().fill(Color(.systemFill)))
+                        .foregroundStyle(.primary)
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
@@ -85,8 +85,8 @@ struct DetalheObraView: View {
                 } label: {
                     Image(systemName: "ellipsis")
                         .padding(8)
-                        .background(Circle().fill(Color(white: 0.95)))
-                        .foregroundColor(.black)
+                        .background(Circle().fill(Color(.systemFill)))
+                        .foregroundStyle(.primary)
                 }
             }
         }

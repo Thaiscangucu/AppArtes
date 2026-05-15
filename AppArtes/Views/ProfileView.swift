@@ -6,10 +6,7 @@ struct ProfileView: View {
     @Query private var obras: [ObraDeArte]
     @Query private var colecoes: [Colecao]
     @State private var showSettings = false
-
-    private let nomeArtista = "Thais Canguçu"
-    private let handle = "@thais.arte"
-    private let bio = "Artista visual. Pintora e escultora baseada em São Paulo, Brasil."
+    @State private var showEditProfile = false
 
     var body: some View {
         NavigationStack {
@@ -24,6 +21,14 @@ struct ProfileView: View {
             .navigationTitle("Perfil")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        showEditProfile = true
+                    } label: {
+                        Text("Editar")
+                            .font(.subheadline)
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showSettings = true
@@ -35,6 +40,9 @@ struct ProfileView: View {
             }
             .navigationDestination(isPresented: $showSettings) {
                 SettingsView()
+            }
+            .sheet(isPresented: $showEditProfile) {
+                EditProfileView()
             }
         }
     }
@@ -51,23 +59,27 @@ struct ProfileView: View {
                         )
                     )
                     .frame(width: 88, height: 88)
-                Text("TC")
+                Text(auth.initials)
                     .font(.system(size: 32, weight: .bold))
                     .foregroundStyle(.white)
             }
 
             VStack(spacing: 4) {
-                Text(nomeArtista)
+                Text(auth.displayName)
                     .font(.title2).bold()
-                Text(handle)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Text(bio)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
-                    .padding(.top, 2)
+                if !auth.handle.isEmpty {
+                    Text(auth.handle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                if !auth.bio.isEmpty {
+                    Text(auth.bio)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 32)
+                        .padding(.top, 2)
+                }
             }
         }
         .padding(.top, 24)

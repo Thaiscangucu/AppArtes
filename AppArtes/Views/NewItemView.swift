@@ -53,7 +53,7 @@ struct NewItem: View {
                                 .font(.largeTitle)
                         }
                         .frame(width: 200, height: 200)
-                        .background(Color.gray.opacity(0.2))
+                        .background(Color(.secondarySystemBackground))
                         .foregroundColor(.blue)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
