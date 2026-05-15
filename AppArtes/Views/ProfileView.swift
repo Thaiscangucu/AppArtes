@@ -160,20 +160,15 @@ struct ProfileView: View {
                                 Image(uiImage: uiImage)
                                     .resizable()
                                     .scaledToFill()
-                                    .frame(maxWidth: .infinity)
-                                    .aspectRatio(1, contentMode: .fill)
-                                    .clipped()
                             } else {
                                 Rectangle()
                                     .fill(Color.obskaElevated)
-                                    .aspectRatio(1, contentMode: .fill)
                                     .overlay(
                                         Image(systemName: "photo")
                                             .foregroundStyle(Color.obskaHair)
                                     )
                             }
 
-                            // Price tag overlay
                             if let preco = obra.preco {
                                 Text(preco, format: .currency(code: "BRL").presentation(.narrow))
                                     .font(.obskaMonoCaption(9))
@@ -185,6 +180,8 @@ struct ProfileView: View {
                                     .padding(6)
                             }
                         }
+                        .aspectRatio(1, contentMode: .fit)
+                        .clipped()
                     }
                 }
             }
