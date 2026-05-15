@@ -13,7 +13,7 @@ struct ContentView: View {
                         Image(systemName: "house")
                     }
                     .tag(0)
-                Text("Marketplace em breve")
+                MarketplaceView()
                     .tabItem {
                         Image(systemName: "bag.fill")
                     }
@@ -34,7 +34,7 @@ struct ContentView: View {
     }
 }
 
-// Preview simulando o contêiner (não esqueça que o HomeView precisa existir no projeto)
+// Preview simulando o contêiner 
 #Preview {
     ContentView()
 }
