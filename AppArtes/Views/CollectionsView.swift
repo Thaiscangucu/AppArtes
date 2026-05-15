@@ -5,41 +5,20 @@ struct CollectionsView: View {
     @State private var isShowingSheet = false
     @Query private var collections: [Colecao]
     @Environment(\.modelContext) private var context
-    
+
     var body: some View {
         NavigationStack {
             List {
                 ForEach(collections) { colecao in
-                    ZStack(alignment: .leading) {
-                        NavigationLink(destination: CollectionView(colecao: colecao)) {
-                            EmptyView()
-                        }
-                        .opacity(0)
-                        
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text(colecao.titulo)
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(.black)
-                            
-                            HStack(spacing: 8) {
-                                imageSlot(for: colecao, index: 0, width: 160, height: 160)
-                                
-                                VStack(spacing: 8) {
-                                    imageSlot(for: colecao, index: 1, width: 140, height: 76)
-                                    imageSlot(for: colecao, index: 2, width: 140, height: 76)
-                                }
-                            }
-                        }
-                        .padding(16)
-                        .background(Color(white: 0.88))
-                        .clipShape(RoundedRectangle(cornerRadius: 0))
+                    NavigationLink(destination: CollectionView(colecao: colecao)) {
+                        ColecaoCard(colecao: colecao)
                     }
-                    .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16))
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         Button(role: .destructive) {
-                            deletarColecao(colecao)
+                            context.delete(colecao)
                         } label: {
                             Label("Deletar", systemImage: "trash")
                         }
@@ -47,7 +26,6 @@ struct CollectionsView: View {
                 }
             }
             .listStyle(.plain)
-            // MARK: Mensagem de estado vazio
             .overlay {
                 if collections.isEmpty {
                     ContentUnavailableView(
@@ -63,8 +41,7 @@ struct CollectionsView: View {
                     Button {
                         isShowingSheet.toggle()
                     } label: {
-                        Image(systemName: "plus")
-                            .foregroundColor(.black)
+                        Image(systemName: "plus").foregroundColor(.black)
                     }
                 }
             }
@@ -73,26 +50,59 @@ struct CollectionsView: View {
             }
         }
     }
-    
-    private func deletarColecao(_ colecao: Colecao) {
-        context.delete(colecao)
+}
+
+private struct ColecaoCard: View {
+    let colecao: Colecao
+
+    private var coverImage: UIImage? {
+        colecao.obras.compactMap { $0.image.flatMap(UIImage.init) }.first
     }
-    
-    @ViewBuilder
-    private func imageSlot(for colecao: Colecao, index: Int, width: CGFloat, height: CGFloat) -> some View {
-        if index < colecao.obras.count,
-           let imageData = colecao.obras[index].image,
-           let uiImage = UIImage(data: imageData) {
-            Image(uiImage: uiImage)
-                .resizable()
-                .scaledToFill()
-                .frame(width: width, height: height)
-                .clipped()
-                .background(Color.white)
-        } else {
-            Rectangle()
-                .fill(Color.white)
-                .frame(width: width, height: height)
+
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            Group {
+                if let uiImage = coverImage {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    Rectangle()
+                        .fill(
+                            LinearGradient(
+                                colors: [Color(.systemGray4), Color(.systemGray2)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .overlay {
+                            Image(systemName: "photo.artframe")
+                                .font(.system(size: 40))
+                                .foregroundStyle(.white.opacity(0.4))
+                        }
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 200)
+            .clipped()
+
+            LinearGradient(
+                colors: [.clear, .black.opacity(0.75)],
+                startPoint: .center,
+                endPoint: .bottom
+            )
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(colecao.titulo)
+                    .font(.title2).bold()
+                    .foregroundStyle(.white)
+                Text("\(colecao.obras.count) \(colecao.obras.count == 1 ? "obra" : "obras")")
+                    .font(.subheadline)
+                    .foregroundStyle(.white.opacity(0.75))
+            }
+            .padding(16)
         }
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
     }
 }

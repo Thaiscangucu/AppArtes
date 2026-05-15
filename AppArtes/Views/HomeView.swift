@@ -52,7 +52,7 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
-                        Text("Configurações em breve")
+                        SettingsView()
                     } label: {
                         Image(systemName: "ellipsis")
                     }

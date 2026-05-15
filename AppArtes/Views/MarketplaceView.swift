@@ -8,7 +8,10 @@ struct MockArtwork: Identifiable {
     let artista: String
     let colecao: String
     let preco: Double
-    let imageURL: String
+    let imageName: String
+    let descricao: String
+    let ano: Int
+    let dimensoes: String
 }
 
 struct MockColecao: Identifiable {
@@ -19,7 +22,7 @@ struct MockColecao: Identifiable {
 
     var quantidadeObras: Int { obras.count }
     var precoTotal: Double { obras.reduce(0) { $0 + $1.preco } }
-    var coverImageURL: String { obras.first?.imageURL ?? "" }
+    var coverImageName: String { obras.first?.imageName ?? "" }
     var artista: String { obras.first?.artista ?? "" }
 }
 
@@ -34,49 +37,67 @@ private let colecaoPosImpressionsimo = MockColecao(
             artista: "Vincent van Gogh",
             colecao: "Pós-Impressionismo",
             preco: 1_200,
-            imageURL: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
+            imageName: "mock_starry_night",
+            descricao: "Uma das obras mais reconhecidas do mundo, representando uma noite turbulenta com redemoinhos no céu sobre uma aldeia adormecida de Saint-Rémy-de-Provence.",
+            ano: 1889,
+            dimensoes: "73,7 × 92,1 cm"
         ),
         MockArtwork(
             titulo: "Autorretrato",
             artista: "Vincent van Gogh",
             colecao: "Pós-Impressionismo",
             preco: 980,
-            imageURL: "https://upload.wikimedia.org/wikipedia/commons/b/b2/Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg"
+            imageName: "mock_vangogh_portrait",
+            descricao: "Um dos mais de trinta autorretratos pintados por Van Gogh, revelando sua intensidade emocional e domínio da pincelada expressiva.",
+            ano: 1889,
+            dimensoes: "65 × 54 cm"
         ),
         MockArtwork(
             titulo: "O Grito",
             artista: "Edvard Munch",
             colecao: "Pós-Impressionismo",
             preco: 870,
-            imageURL: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg"
+            imageName: "mock_the_scream",
+            descricao: "Ícone da arte expressionista, a figura agonizante em primeiro plano contra um céu turbulento tornou-se símbolo universal da ansiedade humana.",
+            ano: 1893,
+            dimensoes: "91 × 73,5 cm"
         ),
     ]
 )
 
 private let colecaoMestresClassicos = MockColecao(
     titulo: "Mestres Clássicos",
-    descricao: "Obras icônicas do Renascimento e do Barroco, marcas da história da pintura ocidental.",
+    descricao: "Obras icônicas do Renascimento e do Barroco, marcas eternas da pintura ocidental.",
     obras: [
         MockArtwork(
             titulo: "Mona Lisa",
             artista: "Leonardo da Vinci",
             colecao: "Mestres Clássicos",
             preco: 3_200,
-            imageURL: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
+            imageName: "mock_mona_lisa",
+            descricao: "O retrato mais famoso do mundo, célebre pelo sorriso enigmático e pela técnica sfumato que confere profundidade e suavidade inigualáveis.",
+            ano: 1517,
+            dimensoes: "77 × 53 cm"
         ),
         MockArtwork(
             titulo: "Las Meninas",
             artista: "Diego Velázquez",
             colecao: "Mestres Clássicos",
             preco: 2_800,
-            imageURL: "https://upload.wikimedia.org/wikipedia/commons/3/31/Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg"
+            imageName: "mock_las_meninas",
+            descricao: "Obra-prima do Barroco espanhol que desafia convenções ao incluir o próprio artista na cena, criando um jogo complexo entre observador e observado.",
+            ano: 1656,
+            dimensoes: "318 × 276 cm"
         ),
         MockArtwork(
             titulo: "Moça com Brinco de Pérola",
             artista: "Johannes Vermeer",
             colecao: "Mestres Clássicos",
             preco: 950,
-            imageURL: "https://upload.wikimedia.org/wikipedia/commons/0/0f/1665_Girl_with_a_Pearl_Earring.jpg"
+            imageName: "mock_pearl_earring",
+            descricao: "Frequentemente chamada de 'Mona Lisa do Norte', a obra hipnotiza pelo olhar da jovem modelo e pelo brilho luminoso do brinco de pérola.",
+            ano: 1665,
+            dimensoes: "44,5 × 39 cm"
         ),
     ]
 )
@@ -90,7 +111,10 @@ private let colecaoImpressionsimo = MockColecao(
             artista: "Claude Monet",
             colecao: "Impressionismo Francês",
             preco: 1_100,
-            imageURL: "https://upload.wikimedia.org/wikipedia/commons/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg"
+            imageName: "mock_water_lilies",
+            descricao: "Parte de uma série de 250 pinturas dedicadas ao jardim aquático de Monet em Giverny, esta obra é um dos exemplos mais sublimes do Impressionismo tardio.",
+            ano: 1906,
+            dimensoes: "87,6 × 92,7 cm"
         ),
     ]
 )
@@ -104,14 +128,20 @@ private let colecaoSurrealismo = MockColecao(
             artista: "Salvador Dalí",
             colecao: "Surrealismo",
             preco: 2_300,
-            imageURL: "https://upload.wikimedia.org/wikipedia/en/d/dd/The_Persistence_of_Memory.jpg"
+            imageName: "mock_persistence",
+            descricao: "Os relógios derretidos sobre uma paisagem desértica tornaram-se o símbolo máximo do Surrealismo, evocando a natureza fluida e irracional do tempo nos sonhos.",
+            ano: 1931,
+            dimensoes: "24,1 × 33 cm"
         ),
         MockArtwork(
             titulo: "Guernica",
             artista: "Pablo Picasso",
             colecao: "Surrealismo",
             preco: 4_100,
-            imageURL: "https://upload.wikimedia.org/wikipedia/en/7/74/PicassoGuernica.jpg"
+            imageName: "mock_guernica",
+            descricao: "Resposta pictórica ao bombardeio nazista da cidade basca de Guernica durante a Guerra Civil Espanhola, é um dos mais poderosos manifestos antibélicos da história da arte.",
+            ano: 1937,
+            dimensoes: "349 × 776 cm"
         ),
     ]
 )
@@ -169,7 +199,10 @@ struct MarketplaceView: View {
                 .padding(.horizontal)
 
             WaterfallGrid(data: mockObrasDestaque, columns: 2, spacing: 12) { obra in
-                ObraMarketCard(obra: obra)
+                NavigationLink(destination: MarketplaceObraDetalheView(obra: obra)) {
+                    ObraMarketCard(obra: obra)
+                }
+                .buttonStyle(PlainButtonStyle())
             }
             .padding(.horizontal)
         }
@@ -202,7 +235,10 @@ struct MarketplaceColecaoDetalheView: View {
                 Divider()
 
                 WaterfallGrid(data: colecao.obras, columns: 2, spacing: 12) { obra in
-                    ObraMarketCard(obra: obra)
+                    NavigationLink(destination: MarketplaceObraDetalheView(obra: obra)) {
+                        ObraMarketCard(obra: obra)
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 }
                 .padding(.horizontal)
             }
@@ -220,18 +256,11 @@ private struct ColecaoDestaqueCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            AsyncImage(url: URL(string: colecao.coverImageURL)) { phase in
-                switch phase {
-                case .success(let image):
-                    image.resizable().scaledToFill()
-                case .failure:
-                    Color.gray.opacity(0.3)
-                default:
-                    Color.gray.opacity(0.15).overlay { ProgressView() }
-                }
-            }
-            .frame(width: 200, height: 130)
-            .clipped()
+            Image(colecao.coverImageName)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 200, height: 130)
+                .clipped()
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(colecao.titulo)
@@ -268,21 +297,11 @@ struct ObraMarketCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            AsyncImage(url: URL(string: obra.imageURL)) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(minWidth: 0, maxWidth: .infinity)
-                case .failure:
-                    Color.gray.opacity(0.3).frame(height: 100)
-                default:
-                    Color.gray.opacity(0.15).frame(height: 100)
-                        .overlay { ProgressView() }
-                }
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            Image(obra.imageName)
+                .resizable()
+                .scaledToFit()
+                .frame(minWidth: 0, maxWidth: .infinity)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(obra.titulo)

@@ -24,7 +24,7 @@ struct ContentView: View {
                     }
                     .tag(3) // Tag corrigida (antes tinha uma tag(2) duplicada aqui)
                 
-                Text("Tela de perfil em breve")
+                ProfileView()
                     .tabItem {
                         Image(systemName: "person")
                     }

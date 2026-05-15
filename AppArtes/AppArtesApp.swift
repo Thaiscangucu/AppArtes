@@ -1,18 +1,19 @@
-//
-//  AppArtesApp.swift
-//  AppArtes
-//
-//  Created by Thais Cangucu on 10/04/26.
-//
-
 import SwiftUI
 import SwiftData
 
 @main
 struct AppArtesApp: App {
+    private var auth = AuthState.shared
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if auth.isSignedIn {
+                ContentView()
+                    .environment(auth)
+            } else {
+                LoginView()
+                    .environment(auth)
+            }
         }
         .modelContainer(for: [Colecao.self, ObraDeArte.self])
     }
