@@ -77,9 +77,7 @@ struct MarketplaceObraDetalheView: View {
             Image(obra.imageName)
                 .resizable()
                 .scaledToFill()
-                .frame(maxWidth: .infinity)
-                .frame(height: 460)
-                .clipped()
+                .frame(maxWidth: .infinity, minHeight: 460, maxHeight: 460)
 
             // Nav buttons overlay
             VStack {
@@ -117,6 +115,7 @@ struct MarketplaceObraDetalheView: View {
             )
         }
         .frame(height: 460)
+        .clipped()
     }
 
     // MARK: - Content
