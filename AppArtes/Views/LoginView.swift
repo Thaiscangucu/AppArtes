@@ -4,6 +4,7 @@ import AuthenticationServices
 struct LoginView: View {
     @Environment(AuthState.self) private var auth
     @Environment(\.colorScheme) private var colorScheme
+    @State private var errorMessage: String?
 
     var body: some View {
         ZStack {
@@ -36,18 +37,29 @@ struct LoginView: View {
                     SignInWithAppleButton(.continue) { request in
                         request.requestedScopes = [.fullName, .email]
                     } onCompletion: { result in
-                        guard case .success(let authorization) = result,
-                              let credential = authorization.credential as? ASAuthorizationAppleIDCredential
-                        else { return }
-
-                        let name = [credential.fullName?.givenName, credential.fullName?.familyName]
-                            .compactMap { $0 }
-                            .joined(separator: " ")
-                        auth.signIn(userId: credential.user, fullName: name.isEmpty ? nil : name)
+                        switch result {
+                        case .success(let authorization):
+                            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else { return }
+                            let name = [credential.fullName?.givenName, credential.fullName?.familyName]
+                                .compactMap { $0 }
+                                .joined(separator: " ")
+                            auth.signIn(userId: credential.user, fullName: name.isEmpty ? nil : name)
+                        case .failure(let error as ASAuthorizationError) where error.code == .canceled:
+                            break
+                        case .failure(let error):
+                            errorMessage = error.localizedDescription
+                        }
                     }
                     .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
                     .frame(height: 50)
-                    .clipShape(RoundedRectangle(cornerRadius: Obska.radiusButton))
+                    .cornerRadius(Obska.radiusButton)
+
+                    if let msg = errorMessage {
+                        Text(msg)
+                            .font(.obskaMonoCaption(11))
+                            .foregroundStyle(.red)
+                            .multilineTextAlignment(.center)
+                    }
 
                     Text("Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.")
                         .font(.obskaMonoCaption(10))
