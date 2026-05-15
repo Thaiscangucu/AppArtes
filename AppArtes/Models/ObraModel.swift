@@ -20,14 +20,16 @@ final class ObraDeArte {
     @Attribute(.externalStorage) var image: Data?
     
     var formatoArquivo: String
-    
+    var preco: Double?
+
     init(
         id: String = UUID().uuidString,
         titulo: String,
         descricao: String,
-        image: Data? = nil, // CORREÇÃO 2: Receber Data no inicializador
+        image: Data? = nil,
         dataCriacao: Date = .now,
-        formatoArquivo: String = "usdz" // Valor padrão definido conforme o diagrama
+        formatoArquivo: String = "usdz",
+        preco: Double? = nil
     ) {
         self.id = id
         self.titulo = titulo
@@ -35,6 +37,7 @@ final class ObraDeArte {
         self.dataCriacao = dataCriacao
         self.image = image
         self.formatoArquivo = formatoArquivo
+        self.preco = preco
     }
     
     func publicar() {

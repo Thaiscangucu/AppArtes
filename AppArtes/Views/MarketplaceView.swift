@@ -14,89 +14,116 @@ struct MockArtwork: Identifiable {
 struct MockColecao: Identifiable {
     let id = UUID()
     let titulo: String
-    let artista: String
-    let quantidadeObras: Int
-    let precoTotal: Double
-    let imageURL: String
+    let descricao: String
+    let obras: [MockArtwork]
+
+    var quantidadeObras: Int { obras.count }
+    var precoTotal: Double { obras.reduce(0) { $0 + $1.preco } }
+    var coverImageURL: String { obras.first?.imageURL ?? "" }
+    var artista: String { obras.first?.artista ?? "" }
 }
 
 // MARK: - Mock Data
 
-private let mockObras: [MockArtwork] = [
-    MockArtwork(
-        titulo: "A Noite Estrelada",
-        artista: "Vincent van Gogh",
-        colecao: "Pós-Impressionismo",
-        preco: 1_200,
-        imageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/600px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
-    ),
-    MockArtwork(
-        titulo: "Moça com Brinco de Pérola",
-        artista: "Johannes Vermeer",
-        colecao: "Mestres Holandeses",
-        preco: 950,
-        imageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/400px-1665_Girl_with_a_Pearl_Earring.jpg"
-    ),
-    MockArtwork(
-        titulo: "O Grito",
-        artista: "Edvard Munch",
-        colecao: "Expressionismo",
-        preco: 870,
-        imageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg/400px-Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg"
-    ),
-    MockArtwork(
-        titulo: "Nenúfares",
-        artista: "Claude Monet",
-        colecao: "Impressionismo Francês",
-        preco: 1_100,
-        imageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/600px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg"
-    ),
-    MockArtwork(
-        titulo: "A Persistência da Memória",
-        artista: "Salvador Dalí",
-        colecao: "Surrealismo",
-        preco: 2_300,
-        imageURL: "https://upload.wikimedia.org/wikipedia/en/d/dd/The_Persistence_of_Memory.jpg"
-    ),
-    MockArtwork(
-        titulo: "O Nascimento de Vênus",
-        artista: "Sandro Botticelli",
-        colecao: "Renascimento Italiano",
-        preco: 3_500,
-        imageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/600px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg"
-    ),
-]
+private let colecaoPosImpressionsimo = MockColecao(
+    titulo: "Pós-Impressionismo",
+    descricao: "Obras que expandiram os limites do Impressionismo, explorando emoção, estrutura e simbolismo.",
+    obras: [
+        MockArtwork(
+            titulo: "A Noite Estrelada",
+            artista: "Vincent van Gogh",
+            colecao: "Pós-Impressionismo",
+            preco: 1_200,
+            imageURL: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
+        ),
+        MockArtwork(
+            titulo: "Autorretrato",
+            artista: "Vincent van Gogh",
+            colecao: "Pós-Impressionismo",
+            preco: 980,
+            imageURL: "https://upload.wikimedia.org/wikipedia/commons/b/b2/Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg"
+        ),
+        MockArtwork(
+            titulo: "O Grito",
+            artista: "Edvard Munch",
+            colecao: "Pós-Impressionismo",
+            preco: 870,
+            imageURL: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Edvard_Munch%2C_1893%2C_The_Scream%2C_oil%2C_tempera_and_pastel_on_cardboard%2C_91_x_73_cm%2C_National_Gallery_of_Norway.jpg"
+        ),
+    ]
+)
+
+private let colecaoMestresClassicos = MockColecao(
+    titulo: "Mestres Clássicos",
+    descricao: "Obras icônicas do Renascimento e do Barroco, marcas da história da pintura ocidental.",
+    obras: [
+        MockArtwork(
+            titulo: "Mona Lisa",
+            artista: "Leonardo da Vinci",
+            colecao: "Mestres Clássicos",
+            preco: 3_200,
+            imageURL: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
+        ),
+        MockArtwork(
+            titulo: "Las Meninas",
+            artista: "Diego Velázquez",
+            colecao: "Mestres Clássicos",
+            preco: 2_800,
+            imageURL: "https://upload.wikimedia.org/wikipedia/commons/3/31/Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg"
+        ),
+        MockArtwork(
+            titulo: "Moça com Brinco de Pérola",
+            artista: "Johannes Vermeer",
+            colecao: "Mestres Clássicos",
+            preco: 950,
+            imageURL: "https://upload.wikimedia.org/wikipedia/commons/0/0f/1665_Girl_with_a_Pearl_Earring.jpg"
+        ),
+    ]
+)
+
+private let colecaoImpressionsimo = MockColecao(
+    titulo: "Impressionismo Francês",
+    descricao: "A captura da luz e do instante, revolucionando a pintura europeia no século XIX.",
+    obras: [
+        MockArtwork(
+            titulo: "Nenúfares",
+            artista: "Claude Monet",
+            colecao: "Impressionismo Francês",
+            preco: 1_100,
+            imageURL: "https://upload.wikimedia.org/wikipedia/commons/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg"
+        ),
+    ]
+)
+
+private let colecaoSurrealismo = MockColecao(
+    titulo: "Surrealismo",
+    descricao: "Arte do inconsciente e dos sonhos, desafiando a lógica e a percepção da realidade.",
+    obras: [
+        MockArtwork(
+            titulo: "A Persistência da Memória",
+            artista: "Salvador Dalí",
+            colecao: "Surrealismo",
+            preco: 2_300,
+            imageURL: "https://upload.wikimedia.org/wikipedia/en/d/dd/The_Persistence_of_Memory.jpg"
+        ),
+        MockArtwork(
+            titulo: "Guernica",
+            artista: "Pablo Picasso",
+            colecao: "Surrealismo",
+            preco: 4_100,
+            imageURL: "https://upload.wikimedia.org/wikipedia/en/7/74/PicassoGuernica.jpg"
+        ),
+    ]
+)
 
 private let mockColecoes: [MockColecao] = [
-    MockColecao(
-        titulo: "Impressionismo Francês",
-        artista: "Claude Monet",
-        quantidadeObras: 8,
-        precoTotal: 4_500,
-        imageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/600px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg"
-    ),
-    MockColecao(
-        titulo: "Pós-Impressionismo",
-        artista: "Vincent van Gogh",
-        quantidadeObras: 12,
-        precoTotal: 8_900,
-        imageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/600px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
-    ),
-    MockColecao(
-        titulo: "Surrealismo",
-        artista: "Salvador Dalí",
-        quantidadeObras: 6,
-        precoTotal: 12_000,
-        imageURL: "https://upload.wikimedia.org/wikipedia/en/d/dd/The_Persistence_of_Memory.jpg"
-    ),
-    MockColecao(
-        titulo: "Renascimento Italiano",
-        artista: "Sandro Botticelli",
-        quantidadeObras: 5,
-        precoTotal: 15_200,
-        imageURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/600px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg"
-    ),
+    colecaoPosImpressionsimo,
+    colecaoMestresClassicos,
+    colecaoImpressionsimo,
+    colecaoSurrealismo,
 ]
+
+private let mockObrasDestaque: [MockArtwork] = mockColecoes.flatMap(\.obras)
 
 // MARK: - Main View
 
@@ -123,7 +150,10 @@ struct MarketplaceView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
                     ForEach(mockColecoes) { colecao in
-                        ColecaoDestaqueCard(colecao: colecao)
+                        NavigationLink(destination: MarketplaceColecaoDetalheView(colecao: colecao)) {
+                            ColecaoDestaqueCard(colecao: colecao)
+                        }
+                        .buttonStyle(PlainButtonStyle())
                     }
                 }
                 .padding(.horizontal)
@@ -138,11 +168,48 @@ struct MarketplaceView: View {
                 .font(.title2).bold()
                 .padding(.horizontal)
 
-            WaterfallGrid(data: mockObras, columns: 2, spacing: 12) { obra in
+            WaterfallGrid(data: mockObrasDestaque, columns: 2, spacing: 12) { obra in
                 ObraMarketCard(obra: obra)
             }
             .padding(.horizontal)
         }
+    }
+}
+
+// MARK: - Collection Detail View
+
+struct MarketplaceColecaoDetalheView: View {
+    let colecao: MockColecao
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(colecao.descricao)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+
+                    HStack {
+                        Label("\(colecao.quantidadeObras) obras", systemImage: "photo.stack")
+                        Spacer()
+                        Text(colecao.precoTotal, format: .currency(code: "BRL"))
+                            .font(.title3).bold()
+                    }
+                    .padding(.top, 4)
+                }
+                .padding(.horizontal)
+
+                Divider()
+
+                WaterfallGrid(data: colecao.obras, columns: 2, spacing: 12) { obra in
+                    ObraMarketCard(obra: obra)
+                }
+                .padding(.horizontal)
+            }
+            .padding(.vertical)
+        }
+        .navigationTitle(colecao.titulo)
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
@@ -153,7 +220,7 @@ private struct ColecaoDestaqueCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            AsyncImage(url: URL(string: colecao.imageURL)) { phase in
+            AsyncImage(url: URL(string: colecao.coverImageURL)) { phase in
                 switch phase {
                 case .success(let image):
                     image.resizable().scaledToFill()
@@ -169,6 +236,7 @@ private struct ColecaoDestaqueCard: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(colecao.titulo)
                     .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(.primary)
                     .lineLimit(1)
                 Text(colecao.artista)
                     .font(.system(size: 12))
@@ -181,6 +249,7 @@ private struct ColecaoDestaqueCard: View {
                     Spacer()
                     Text(colecao.precoTotal, format: .currency(code: "BRL"))
                         .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(.primary)
                 }
             }
             .padding(10)
@@ -194,7 +263,7 @@ private struct ColecaoDestaqueCard: View {
 
 // MARK: - Artwork Card
 
-private struct ObraMarketCard: View {
+struct ObraMarketCard: View {
     let obra: MockArtwork
 
     var body: some View {

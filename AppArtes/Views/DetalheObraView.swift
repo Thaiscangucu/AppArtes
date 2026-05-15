@@ -31,9 +31,11 @@ struct DetalheObraView: View {
 
                 // Lista de Detalhes (Baseado na sua imagem)
                 VStack(alignment: .leading, spacing: 0) {
+                    if let preco = obra.preco {
+                        detalheLinha(label: "Preço", valor: preco.formatted(.currency(code: "BRL")))
+                    }
                     detalheLinha(label: "Pintura", valor: obra.formatoArquivo)
                     detalheLinha(label: "Descrição", valor: obra.descricao)
-                    detalheLinha(label: "Artista", valor: "Thais Ferreira Canguçu") // Exemplo estático
                     detalheLinha(label: "Data de criação", valor: obra.dataCriacao.formatted(date: .long, time: .omitted))
                 }
                 .padding(.horizontal)

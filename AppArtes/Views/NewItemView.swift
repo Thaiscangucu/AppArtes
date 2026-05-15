@@ -28,6 +28,7 @@ struct NewItem: View {
     @State var title = ""
     @State var descricao = ""
     @State var data = Date.now
+    @State var precoTexto = ""
     
     var body: some View {
         NavigationStack{
@@ -68,6 +69,8 @@ struct NewItem: View {
                         .textInputAutocapitalization(.words)
                     DatePicker("Data de criação", selection: $data, displayedComponents: .date)
                         .datePickerStyle(.compact)
+                    TextField("Preço (R$)", text: $precoTexto)
+                        .keyboardType(.decimalPad)
                 }
                 .scrollContentBackground(.hidden)
             }
@@ -83,15 +86,14 @@ struct NewItem: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        // 2. Transforma a imagem em Data
                         if let image = selectedImage, let imageData = image.jpegData(compressionQuality: 0.8) {
-                            
-                            // 3. Cria a obra
+                            let preco = Double(precoTexto.replacingOccurrences(of: ",", with: "."))
                             let novaObra = ObraDeArte(
                                 titulo: title,
                                 descricao: descricao,
                                 image: imageData,
-                                dataCriacao: data
+                                dataCriacao: data,
+                                preco: preco
                             )
                             
                             // 4. Salva a obra e CONECTA na coleção
